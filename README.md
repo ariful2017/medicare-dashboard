@@ -100,3 +100,5 @@ The logger records a timestamp and context label. Global handlers for `window.on
 ## Data Persistence
 
 This is a frontend learning assignment. Data is held in React state and resets to the seed data after a page refresh. No backend or database is used.
+
+Design and Developed By: Muhammad Ariful Islam

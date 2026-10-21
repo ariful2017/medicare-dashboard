@@ -1,22 +1,20 @@
 export default function FilterableList({
   items,
   renderItem,
-  emptyTitle = "No results found",
-  emptyMessage = "Try changing your filters.",
+  getKey,
+  emptyMessage = "No items to display.",
 }) {
   if (items.length === 0) {
-    return (
-      <div className="empty-state">
-        <div className="empty-icon">⌕</div>
-        <h3>{emptyTitle}</h3>
-        <p>{emptyMessage}</p>
-      </div>
-    );
+    return <p className="empty-list-message">{emptyMessage}</p>;
   }
 
   return (
     <div className="filterable-list">
-      {items.map((item) => renderItem(item))}
+      {items.map((item) => (
+        <div key={getKey(item)} className="filterable-list__item">
+          {renderItem(item)}
+        </div>
+      ))}
     </div>
   );
 }

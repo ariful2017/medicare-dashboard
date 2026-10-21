@@ -1,109 +1,180 @@
 import { useState } from "react";
-
-import { doctors as initialDoctors } from "./data/doctors";
-import { appointments as initialAppointments } from "./data/appointments";
-
 import Header from "./components/layout/Header";
 import PageContainer from "./components/layout/PageContainer";
-import Card from "./components/ui/Card";
-import Badge from "./components/ui/Badge";
-
-import StatGrid from "./components/stats/StatGrid";
 import DoctorPanel from "./components/doctors/DoctorPanel";
+import AppointmentForm from "./components/appointments/AppointmentForm";
+import AppointmentList from "./components/appointments/AppointmentList";
+import ErrorBoundary from "./components/error/ErrorBoundary";
+import Card from "./components/ui/Card";
+import { doctors as initialDoctors } from "./data/doctors";
+import { appointments as initialAppointments } from "./data/appointments";
+import { logInfo, logWarn } from "./components/utils/logger";
+import { getGreeting } from "./components/utils/format";
+import DoctorList from "./components/doctors/DoctorList";
 
 export default function App() {
   const [doctors] = useState(initialDoctors);
-  const [appointments] = useState(initialAppointments);
+  const [appointments, setAppointments] = useState(initialAppointments);
 
-  // [REQ-3] Lifting state up: selectedDoctorId lives in App
-  // and is shared by DoctorPanel and, in Part 2, AppointmentForm.
-  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  const [selectedDoctorId, setSelectedDoctorId] = useState("");
+
+  const [lastBookedMessage, setLastBookedMessage] = useState("");
+
+  const pendingCount = appointments.filter(
+    (item) => item.status === "Pending"
+  ).length;
+
+  const completedCount = appointments.filter(
+    (item) => item.status === "Completed"
+  ).length;
 
   function handleSelectDoctor(doctorId) {
     setSelectedDoctorId(doctorId);
   }
 
-  const recentAppointments = [...appointments]
-    .sort((a, b) => b.id - a.id)
-    .slice(0, 4);
+  function handleBookAppointment(newAppointment) {
+   
+    setAppointments((previous) => [newAppointment, ...previous]);
+    setLastBookedMessage("Your new appointment has been added.");
+    logInfo("App.handleBookAppointment", "Appointment created", {
+      appointmentId: newAppointment.id,
+    });
+  }
 
-  function getDoctor(doctorId) {
-    return doctors.find((doctor) => doctor.id === doctorId);
+  function handleStatusChange(appointmentId, newStatus) {
+    setAppointments((previous) =>
+      previous.map((appointment) =>
+        appointment.id === appointmentId
+          ? { ...appointment, status: newStatus }
+          : appointment
+      )
+    );
+
+    logInfo("App.handleStatusChange", "Appointment status changed", {
+      appointmentId,
+      newStatus,
+    });
+  }
+
+  function handleDelete(appointmentId) {
+    const exists = appointments.some(
+      (appointment) => appointment.id === appointmentId
+    );
+
+    if (!exists) {
+      logWarn("App.handleDelete", "Appointment not found", {
+        appointmentId,
+      });
+      return;
+    }
+
+    setAppointments((previous) =>
+      previous.filter((appointment) => appointment.id !== appointmentId)
+    );
+
+    logInfo("App.handleDelete", "Appointment deleted", {
+      appointmentId,
+    });
   }
 
   return (
     <>
-      <Header
-        doctorCount={doctors.length}
-        onCrashTest={() => {
-          window.alert("Crash Test will be implemented in Part 3.");
-        }}
-      />
+      <Header />
 
       <PageContainer>
-        <StatGrid doctors={doctors} appointments={appointments} />
+        <section className="welcome-section">
+          <div>
+            <p className="eyebrow">CLINIC OVERVIEW</p>
+            <h1>Appointment Dashboard</h1>
 
-        <div className="main-grid">
-          <DoctorPanel
-            doctors={doctors}
-            selectedDoctorId={selectedDoctorId}
-            onSelectDoctor={handleSelectDoctor}
-          />
+            
+            <p className="welcome-copy">
+              {(() => {
+                if (appointments.length === 0) {
+                  return "No appointments scheduled yet.";
+                }
 
-          <Card
-            title="Recent Appointments"
-            action={
-              <span className="panel-count">
-                {appointments.length} total
-              </span>
-            }
-          >
-            {recentAppointments.length === 0 ? (
-              <div className="empty-state">
-                <h3>No appointments yet</h3>
-                <p>Appointment booking will be added in Part 2.</p>
-              </div>
-            ) : (
-              <div className="appointment-preview">
-                {recentAppointments.map((appointment) => {
-                  const doctor = getDoctor(appointment.doctorId);
+                if (pendingCount > 0) {
+                  return `${pendingCount} appointment${
+                    pendingCount === 1 ? "" : "s"
+                  } waiting for attention.`;
+                }
 
-                  return (
-                    <div
-                      className="preview-row"
-                      key={appointment.id}
-                    >
-                      <div className="preview-avatar">
-                        {appointment.patientName.charAt(0)}
-                      </div>
-
-                      <div className="preview-details">
-                        <strong>{appointment.patientName}</strong>
-                        <span>
-                          {doctor?.name ?? "Unknown doctor"}
-                        </span>
-                        <span>
-                          {appointment.date} · {appointment.time}
-                        </span>
-                      </div>
-
-                      <Badge
-                        variant={appointment.status.toLowerCase()}
-                      >
-                        {appointment.status}
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            <p className="part-note">
-              Full appointment management and booking form are coming
-              in Parts 2 and 3.
+                return "Your appointment list is up to date.";
+              })()}
             </p>
+          </div>
+
+          <span className="greeting">{getGreeting()}, Reception</span>
+        </section>
+
+        <section className="stats-grid" aria-label="Clinic statistics">
+          <Card>
+            <p className="stat-label">Total doctors</p>
+            <p className="stat-value">{doctors.length}</p>
           </Card>
+
+          <Card>
+            <p className="stat-label">Appointments</p>
+            <p className="stat-value">{appointments.length}</p>
+          </Card>
+
+          <Card>
+            <p className="stat-label">Pending</p>
+            <p className="stat-value">{pendingCount}</p>
+          </Card>
+
+          <Card>
+            <p className="stat-label">Completed</p>
+            <p className="stat-value">{completedCount}</p>
+          </Card>
+        </section>
+
+        {lastBookedMessage && (
+          <p className="form-message form-message--success" role="status">
+            {lastBookedMessage}
+            <button
+              type="button"
+              className="text-button"
+              onClick={() => setLastBookedMessage("")}
+            >
+              Dismiss
+            </button>
+          </p>
+        )}
+
+        <section className="dashboard-main">
+          <div className="dashboard-column">
+            <DoctorPanel
+              doctors={doctors}
+              renderDoctorList={(filteredDoctors) => (
+                <DoctorList
+                doctors={filteredDoctors}
+                selectedDoctorId={selectedDoctorId}
+                onSelectDoctor={handleSelectDoctor}
+                 />
+                )}
+             />
+
+            <AppointmentForm
+              doctors={doctors}
+              selectedDoctorId={selectedDoctorId}
+              onSelectDoctor={handleSelectDoctor}
+              onBookAppointment={handleBookAppointment}
+            />
+          </div>
+
+          <div className="dashboard-column">
+            <ErrorBoundary context="AppointmentsPanel">
+              <AppointmentList
+                appointments={appointments}
+                doctors={doctors}
+                onStatusChange={handleStatusChange}
+                onDelete={handleDelete}
+              />
+            </ErrorBoundary>
         </div>
+        </section>
       </PageContainer>
     </>
   );

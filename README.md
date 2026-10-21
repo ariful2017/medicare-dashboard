@@ -1,4 +1,3 @@
-
 # MediCare Clinic — Appointment Dashboard
 
 A frontend-only hospital appointment dashboard built with React and Vite for the Module 26 React Batch-9 assignment.
@@ -80,7 +79,7 @@ Final screenshots will be added before submission the project
 
 ## Prop Drilling
 
-The final implementation and explanation will be added after the component composition/render-prop solution is completed.
+Prop drilling happens when a value or callback is passed through intermediate components that do not need to use it. In the doctor selection flow, the selected doctor ID and selection callback could be passed through `<span>DoctorPanel</span>` to `<span>DoctorList</span>` and then to `<span>DoctorCard</span>`. I changed `<span>DoctorPanel</span>` to use a render prop. It now filters doctors and calls the renderer supplied by `<span>App</span>`, where `<span>DoctorList</span>` is created directly with the required state and callback. This avoids passing those props through `<span>DoctorPanel</span>` and keeps the state in the common parent.The final implementation and explanation will be added after the component composition/render-prop solution is complete
 
 ## Error Handling
 

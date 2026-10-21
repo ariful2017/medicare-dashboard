@@ -1,53 +1,32 @@
-import Card from "../ui/Card";
-import Badge from "../ui/Badge";
-import Button from "../ui/Button";
-
 export default function DoctorCard({
   doctor,
-  selected,
+  isSelected,
   onSelectDoctor,
 }) {
+  const unavailable = doctor.available === false;
+
   return (
-    <Card className={`doctor-card ${selected ? "selected" : ""}`}>
-      <div className="doctor-card-main">
-        <div className="doctor-avatar">
-          {doctor.name
-            .replace("Dr. ", "")
-            .split(" ")
-            .map((part) => part[0])
-            .slice(0, 2)
-            .join("")}
-        </div>
-
-        <div className="doctor-info">
-          <h3>{doctor.name}</h3>
-          <p>{doctor.specialization}</p>
-          <span className="doctor-department">
-            {doctor.department}
-          </span>
-        </div>
+    <article
+      className={`doctor-card ${isSelected ? "doctor-card--selected" : ""}`}
+    >
+      <div className="doctor-card__details">
+        <strong>{doctor.name}</strong>
+        <span>{doctor.department}</span>
+        <span className={unavailable ? "doctor-unavailable" : "doctor-available"}>
+          {unavailable ? "Unavailable" : "Available"}
+        </span>
       </div>
 
-      <div className="doctor-card-footer">
-        <div>
-          <span className="fee-label">Visiting fee</span>
-          <strong>৳{doctor.visitingFee.toLocaleString("en-BD")}</strong>
-        </div>
-
-        {doctor.available ? (
-          <Badge variant="completed">Available</Badge>
-        ) : (
-          <Badge variant="cancelled">Not available</Badge>
-        )}
-      </div>
-
-      <Button
-        disabled={!doctor.available}
-        variant={selected ? "secondary" : "primary"}
+      <button
+        type="button"
+        className={`button ${
+          isSelected ? "button--secondary" : "button--primary"
+        }`}
+        disabled={unavailable}
         onClick={() => onSelectDoctor(doctor.id)}
       >
-        {selected ? "Selected" : "Select Doctor"}
-      </Button>
-    </Card>
+        {isSelected ? "Selected" : "Select"}
+      </button>
+    </article>
   );
 }

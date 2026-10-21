@@ -1,16 +1,16 @@
 export default function Button({
   children,
-  onClick,
   type = "button",
   variant = "primary",
   disabled = false,
+  onClick,
 }) {
   return (
     <button
       type={type}
-      className={`btn btn-${variant}`}
-      onClick={onClick}
+      className={`button button--${variant}`}
       disabled={disabled}
+      onClick={onClick}
     >
       {children}
     </button>

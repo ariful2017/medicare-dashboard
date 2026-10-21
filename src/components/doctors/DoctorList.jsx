@@ -1,5 +1,5 @@
-import DoctorCard from "./DoctorCard";
 import FilterableList from "../ui/FilterableList";
+import DoctorCard from "./DoctorCard";
 
 export default function DoctorList({
   doctors,
@@ -9,13 +9,12 @@ export default function DoctorList({
   return (
     <FilterableList
       items={doctors}
-      emptyTitle="No doctors found"
-      emptyMessage="Try another name or department."
+      getKey={(doctor) => doctor.id}
+      emptyMessage="No doctors match your search."
       renderItem={(doctor) => (
         <DoctorCard
-          key={doctor.id}
           doctor={doctor}
-          selected={selectedDoctorId === doctor.id}
+          isSelected={String(doctor.id) === String(selectedDoctorId)}
           onSelectDoctor={onSelectDoctor}
         />
       )}

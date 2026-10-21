@@ -1,50 +1,50 @@
-# MediCare Clinic — Appointment Dashboard
+# MediCare Clinic — Appointment Dashboard UI
 
-A frontend-only hospital appointment dashboard built with React and Vite for the Module 26 React Batch-9 assignment.
+A responsive clinic appointment dashboard built with React and Vite. The app uses local JavaScript seed data and React state; it does not require a backend or API.
 
-## Current Progress
+## Screenshot
 
-Part 1: Project setup, dashboard foundation, seed data, reusable UI components, doctor cards, search, department filters, and summary statistics.
+![1792556110339](image/README/1792556110339.png)
 
-## Features Implemented
+Features
 
-- React application created with Vite
-- Reusable Card, Button, Badge, and EmptyState components
-- Eight seeded doctors across five departments
-- Search doctors by name
-- Filter doctors by department
-- Select doctors and highlight the selected card
-- Show doctor availability
-- Summary statistics derived from seed data
-- Responsive dashboard layout
-- Seed appointment preview
+- Summary cards for total doctors, total appointments, pending appointments, and completed appointments.
+- Doctor search and department filters.
+- Doctor selection connected to the appointment form.
+- Appointment form validation and success feedback.
+- Appointment status updates and deletion with confirmation.
+- Appointment status filters and counts.
+- Reusable UI components and render props.
+- Error Boundary, fallback UI, and global error logging.
+- Responsive desktop, tablet, and mobile layouts.
 
-## Tech Stack
+## Technologies
 
 - React
 - Vite
 - JavaScript
 - CSS
-- Git and GitHub
+- React hooks: `useState`, `useEffect`, and `useRef`
 
-## Setup Instructions
+## Getting Started
 
-Install Node.js, then run:
+### Prerequisites
+
+Install Node.js and npm.
+
+### Installation
 
 ```bash
 npm install
 npm run dev
 ```
 
-To build for production:
+Open the local URL displayed in the terminal.
+
+### Production build
 
 ```bash
 npm run build
-```
-
-To preview the production build:
-
-```bash
 npm run preview
 ```
 
@@ -52,40 +52,51 @@ npm run preview
 
 ```text
 src/
-├── assets/
 ├── components/
-│   ├── layout/
-│   ├── ui/
-│   ├── stats/
-│   ├── doctors/
 │   ├── appointments/
-│   └── error/
+│   ├── doctors/
+│   ├── error/
+│   ├── layout/
+│   ├── stats/
+│   └── ui/
 ├── data/
 ├── utils/
 ├── App.jsx
-├── main.jsx
-└── index.css
+├── index.css
+└── main.jsx
+screenshots/
+└── dashboard.png
 ```
 
-## React Concepts
+## React Requirements Mapping
 
-Part 1 demonstrates reusable components, JSX, `.map()` with stable keys, props, callback props, `children`, a render prop, derived values, controlled search input, and lifted state for doctor selection.
+Update the file names and line numbers below after checking your final source code.
 
-Additional required concepts and their final file/line mappings will be documented after Parts 2–4 are completed.
-
-## Screenshots
-
-Final screenshots will be added before submission the project
+| Requirement                               | Implementation                                                                                 |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| REQ-1: `.map()` and stable keys         | `src/components/doctors/DoctorList.jsx`, `src/components/appointments/AppointmentList.jsx` |
+| REQ-2: Conditional rendering              | `src/components/`, `src/components/layout/Header.jsx`                                      |
+| REQ-3: Lifting state up                   | `src/App.jsx`                                                                                |
+| REQ-4: Props and callbacks                | `src/App.jsx`, doctor and appointment components                                             |
+| REQ-5: `children` composition           | `src/components/ui/Card.jsx` and panel components                                            |
+| REQ-6: Render props                       | `src/components/ui/FilterableList.jsx`                                                       |
+| REQ-7: Controlled inputs                  | `src/components/appointments/AppointmentForm.jsx`                                            |
+| REQ-8: Uncontrolled input with `useRef` | `src/components/appointments/AppointmentForm.jsx`                                            |
+| REQ-9: Prop drilling solution             | `src/components/doctors/DoctorPanel.jsx`, `DoctorList.jsx`, and this README                |
+| REQ-10: Click and submit handlers         | Doctor, appointment, and form components                                                       |
+| REQ-11: Error Boundary and fallback       | `src/components/error/ErrorBoundary.jsx`, `FallbackUI.jsx`                                 |
+| REQ-12: Global error handlers and logger  | `src/main.jsx`, `src/utils/logger.js`                                                      |
 
 ## Prop Drilling
 
-Prop drilling happens when a value or callback is passed through intermediate components that do not need to use it. In the doctor selection flow, the selected doctor ID and selection callback could be passed through `<span>DoctorPanel</span>` to `<span>DoctorList</span>` and then to `<span>DoctorCard</span>`. I changed `<span>DoctorPanel</span>` to use a render prop. It now filters doctors and calls the renderer supplied by `<span>App</span>`, where `<span>DoctorList</span>` is created directly with the required state and callback. This avoids passing those props through `<span>DoctorPanel</span>` and keeps the state in the common parent.The final implementation and explanation will be added after the component composition/render-prop solution is complete
+Prop drilling happens when a value or callback is passed through intermediate components that do not need to use it themselves. In this project, the original approach passed doctor-related data through the doctor panel and list hierarchy. The render-prop/component-composition approach lets a parent build the required doctor-list element and pass it to the panel, reducing the need to forward unrelated props through every intermediate component.
 
 ## Error Handling
 
-The final implementation and explanation will be added after the Error Boundary, fallback UI, logger, and global error handlers are implemented.
+The class-based Error Boundary catches errors during rendering in its child component tree and displays a friendly fallback UI. The appointments panel has its own boundary so an error there does not have to blank out the whole dashboard. The Crash Test button demonstrates this behavior.
 
-## Assignment
+The logger records a timestamp and context label. Global handlers for `window.onerror` and `unhandledrejection` capture additional errors. An Error Boundary alone is not sufficient because it does not catch errors from event handlers, asynchronous callbacks, or code outside React rendering.
 
-React Batch-9 — Module 26
-MediCare Clinic Appointment Dashboard
+## Data Persistence
+
+This is a frontend learning assignment. Data is held in React state and resets to the seed data after a page refresh. No backend or database is used.

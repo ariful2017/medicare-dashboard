@@ -1178,3 +1178,355 @@ textarea:focus-visible {
 .doctor-card__details .doctor-unavailable {
   color: #b91c1c;
 }
+
+/* [PART 4] Design tokens */
+:root {
+  --page-bg: #f1f5f9;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --primary: #0f766e;
+  --primary-soft: #ccfbf1;
+  --text: #0f172a;
+  --muted: #64748b;
+  --danger: #dc2626;
+
+  --pending-bg: #fef3c7;
+  --pending-text: #b45309;
+  --confirmed-bg: #dbeafe;
+  --confirmed-text: #1d4ed8;
+  --completed-bg: #dcfce7;
+  --completed-text: #15803d;
+  --cancelled-bg: #fee2e2;
+  --cancelled-text: #b91c1c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--primary-soft);
+  border-color: var(--primary);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Dashboard layout */
+.page-container {
+  width: min(1440px, 100%);
+  margin-inline: auto;
+  padding: 24px;
+}
+
+.dashboard-main,
+.main-grid {
+  display: grid;
+  grid-template-columns: 40% minmax(0, 60%);
+  gap: 20px;
+  align-items: start;
+}
+
+.stats-grid,
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.card,
+.panel,
+.stat-card,
+.doctor-card,
+.appointment-row {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.card,
+.panel,
+.stat-card {
+  padding: 18px;
+}
+
+.card h2,
+.panel h2 {
+  margin-top: 0;
+}
+
+/* Buttons */
+.btn,
+.button {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-weight: 600;
+}
+
+.btn-primary,
+.button-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-secondary,
+.button-secondary {
+  background: white;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-danger,
+.button-danger {
+  background: var(--danger);
+  color: white;
+}
+
+/* Doctor and appointment lists */
+.doctor-list,
+.appointment-list {
+  display: grid;
+  gap: 12px;
+}
+
+.doctor-card,
+.appointment-row {
+  padding: 14px;
+}
+
+.doctor-card.selected {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.doctor-card h3,
+.appointment-row h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.muted,
+.helper-text {
+  color: var(--muted);
+}
+
+.filter-chips,
+.status-filters,
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-chip,
+.status-chip {
+  padding: 7px 11px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: white;
+  color: var(--text);
+}
+
+.filter-chip.active,
+.status-chip.active {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Status badges */
+.badge,
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.badge-pending,
+.status-pending {
+  background: var(--pending-bg);
+  color: var(--pending-text);
+}
+
+.badge-confirmed,
+.status-confirmed {
+  background: var(--confirmed-bg);
+  color: var(--confirmed-text);
+}
+
+.badge-completed,
+.status-completed {
+  background: var(--completed-bg);
+  color: var(--completed-text);
+}
+
+.badge-cancelled,
+.status-cancelled {
+  background: var(--cancelled-bg);
+  color: var(--cancelled-text);
+}
+
+/* Booking form */
+.appointment-form,
+.form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-field {
+  display: grid;
+  gap: 6px;
+}
+
+.form-field label {
+  font-weight: 600;
+}
+
+.form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.field-error,
+.error-message {
+  color: var(--danger);
+  font-size: 0.875rem;
+}
+
+.success-message {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--completed-bg);
+  color: var(--completed-text);
+}
+
+/* Error boundary fallback */
+.error-fallback {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: white;
+}
+
+.error-fallback h2 {
+  margin-top: 0;
+}
+
+.error-fallback details {
+  margin-block: 12px;
+  overflow-wrap: anywhere;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.header p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+/* Tablet: 640px–1023px */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .stats-grid,
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-main,
+  .main-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Mobile: under 640px */
+@media (max-width: 639px) {
+  .page-container {
+    padding: 12px;
+  }
+
+  .stats-grid,
+  .stat-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-main,
+  .main-grid,
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .form-field.full-width {
+    grid-column: auto;
+  }
+
+  .card,
+  .panel,
+  .stat-card {
+    padding: 14px;
+  }
+}
